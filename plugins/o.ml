@@ -68,15 +68,54 @@ let print_puzzle puzzle =
   done
 
 (* Programme principal *)
-let () =
-  let n = 12 in
-  let k = 10 in
-  let puzzle = generate_puzzle n k in
-  print_endline "Puzzle généré :";
-  print_puzzle puzzle;
-  if solve puzzle then begin
-    print_endline "Puzzle résolu :";
-    print_puzzle puzzle
-  end
-  else
-    print_endline "Impossible de résoudre le puzzle."
+let rec main () =
+  print_endline "--   Menu Principal--  ";
+  print_endline "Que voulez-vous faire ?";
+  print_endline "1. Générer un puzzle puis afficher";
+  print_endline "2. Générer et résoudre le puzzle puis afficher";
+  print_endline "3. Quitter";
+
+  try
+    match read_int () with
+    | 1 ->
+        let n = 12 in
+        let k = 10 in
+        let puzzle = generate_puzzle n k in
+        print_endline "Puzzle généré :";
+        print_puzzle puzzle;
+        print_endline "Voulez-vous résoudre le puzzle (o/n) ?";
+        (match read_line () with
+         | "o" -> if solve puzzle then begin
+             print_endline "Puzzle résolu :";
+             print_puzzle puzzle
+           end
+             else
+               print_endline "Impossible de résoudre le puzzle.";
+             main ()
+         | _ -> main ())
+    | 2 ->
+        let n = 12 in
+        let k = 10 in
+        let puzzle = generate_puzzle n k in
+        if solve puzzle then begin
+          print_endline "Puzzle généré et résolu :";
+          print_puzzle puzzle
+        end
+        else
+          print_endline "Impossible de résoudre le puzzle.";
+        print_endline "Taper n pour retourner au menu principal";
+        (match read_line () with
+         | "n" -> main ()
+         | _ -> main ())
+    | 3 ->
+        print_endline "Au revoir!";
+        exit 0
+    | _ ->
+        print_endline "Option invalide.";
+        main ()
+  with
+  | Failure _ ->
+      print_endline "Option invalide.";
+      main ()
+
+let () = main ()
